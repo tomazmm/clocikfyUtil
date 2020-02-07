@@ -5,6 +5,8 @@ import datetime
 from datetime import date
 import re
 
+from Report import Report
+
 pp = pprint.PrettyPrinter(indent=4)
 
 api = {
@@ -28,6 +30,7 @@ def calcPrevSprintTimeStamp() -> dict:
         "endDate": end_date.strftime(output_format)
     }
 
+
 def openJsonFile(name : str) -> dict:
     with open(name, "r") as file:
         return json.load(file)
@@ -45,31 +48,32 @@ def getReportSummary() -> dict:
     return json.loads(response.text)
 
 
-def parseTaskDuration( duration : str ) -> int:
-    num = list(map(int, re.findall(r'\d+', duration)))
-    if len(num) == 1:
-        return num[0]
-    elif len(num) == 2:
-        return num[0] * 60 + num[1]
-    else:
-        assert False
+
+def groupByProject( report : dict):
+    pass
+
+def groupByTask( report : dict):
+    pass
 
 
-def calcSP( duration : int) -> float:
+def calcSP( duration: int) -> float:
     return round(duration / 60 / 4, 1)
 
 
 def main():
-    report = getReportSummary()
+    report_ = getReportSummary()
+    pp.pprint(report_)
+    report = Report(report_)
+    #report = getReportSummary()
     sp = 0
-    for entry in report["timeEntries"]:
+    #pp.pprint(report)
+    #for entry in report["timeEntries"]:
         #pp.pprint(entry)
-        duration = parseTaskDuration(entry["timeInterval"]["duration"])
-        print(entry["project"]["name"] + " : " + entry["description"])
-        print("Duration: ", duration)
-        sp += calcSP(duration)
-        print("SP: ", calcSP(duration))
-    print("story points: ", round(sp, 1))
+        #print(entry["project"]["name"] + " : " + entry["description"])
+        #print("Duration: ", duration)
+        #sp += calcSP(duration)
+        #print("SP: ", calcSP(duration))
+    #print("story points: ", round(sp, 1))
 
 
 if __name__ == "__main__":
