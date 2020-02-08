@@ -30,15 +30,19 @@ def calcPrevSprintTimeStamp() -> dict:
         "endDate": end_date.strftime(output_format)
     }
 
-
-def openJsonFile(name : str) -> dict:
+#TODO create Utils class
+def readJsonFile(name: str) -> dict:
     with open(name, "r") as file:
         return json.load(file)
 
 
+def writeJsonFile(json_data: dict, path: str) -> None:
+    return None
+
+
 def getReportSummary() -> dict:
     sprint_timestamp = calcPrevSprintTimeStamp()
-    summary_rq = openJsonFile("json/summary_request.json")
+    summary_rq = readJsonFile("json/summary_request.json")
     summary_rq["startDate"] = sprint_timestamp["startDate"]
     summary_rq["endDate"] = sprint_timestamp["endDate"]
 
@@ -48,32 +52,10 @@ def getReportSummary() -> dict:
     return json.loads(response.text)
 
 
-
-def groupByProject( report : dict):
-    pass
-
-def groupByTask( report : dict):
-    pass
-
-
-def calcSP( duration: int) -> float:
-    return round(duration / 60 / 4, 1)
-
-
 def main():
-    report_ = getReportSummary()
-    pp.pprint(report_)
-    report = Report(report_)
-    #report = getReportSummary()
-    sp = 0
-    #pp.pprint(report)
-    #for entry in report["timeEntries"]:
-        #pp.pprint(entry)
-        #print(entry["project"]["name"] + " : " + entry["description"])
-        #print("Duration: ", duration)
-        #sp += calcSP(duration)
-        #print("SP: ", calcSP(duration))
-    #print("story points: ", round(sp, 1))
+    time_interval = calcPrevSprintTimeStamp()
+    clockify_report = getReportSummary()
+    Report(clockify_report)
 
 
 if __name__ == "__main__":
