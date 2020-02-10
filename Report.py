@@ -88,17 +88,3 @@ class Report:
         elif(groupBy == "taskname"):
             Utils.writeJsonFile(self.groupByTaskName(), "export/SprintReport-06072020")
 
-
-
-        # pp.pprint(self.groupByProject())
-        # pp.pprint(self.groupByTaskName())
-        #serialized = {}
-        # for entry in (vars(self)):
-        #    if(entry == "tasks"):
-        #        for task in self.__dict__[entry]:
-        #            #print(task.serialize())
-        #            task.serialize()
-        #    else:
-        #        pass
-        # print(str(entry))
-        # print(str(entry), " : ", self.__dict__[entry])

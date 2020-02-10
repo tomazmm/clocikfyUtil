@@ -1,5 +1,4 @@
 import json
-import pathlib
 
 class Utils:
 
@@ -13,6 +12,3 @@ class Utils:
     def writeJsonFile(json_data: dict, path: str) -> None:
         with open(path, 'w+') as file:
             json.dump(json_data, file, indent=4)
-
-
-

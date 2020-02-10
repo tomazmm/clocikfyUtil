@@ -46,7 +46,6 @@ def getReportSummary() -> dict:
 
 
 def main():
-
     if not os.path.isdir("export"):
         os.mkdir("export")
 
