@@ -2,8 +2,11 @@ import requests
 import pprint
 import json
 import datetime
+import os
+
 from datetime import date
-import re
+from Utils import Utils
+
 
 from Report import Report
 
@@ -30,19 +33,9 @@ def calcPrevSprintTimeStamp() -> dict:
         "endDate": end_date.strftime(output_format)
     }
 
-#TODO create Utils class
-def readJsonFile(name: str) -> dict:
-    with open(name, "r") as file:
-        return json.load(file)
-
-
-def writeJsonFile(json_data: dict, path: str) -> None:
-    return None
-
-
 def getReportSummary() -> dict:
     sprint_timestamp = calcPrevSprintTimeStamp()
-    summary_rq = readJsonFile("json/summary_request.json")
+    summary_rq = Utils.readJsonFile("json/summary_request.json")
     summary_rq["startDate"] = sprint_timestamp["startDate"]
     summary_rq["endDate"] = sprint_timestamp["endDate"]
 
@@ -53,9 +46,11 @@ def getReportSummary() -> dict:
 
 
 def main():
-    time_interval = calcPrevSprintTimeStamp()
-    clockify_report = getReportSummary()
-    Report(clockify_report)
+
+    if not os.path.isdir("export"):
+        os.mkdir("export")
+
+    Report(getReportSummary()).exportToJson("taskname")
 
 
 if __name__ == "__main__":
