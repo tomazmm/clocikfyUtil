@@ -1,5 +1,7 @@
 import re
 import pprint
+import datetime
+from datetime import date
 from Utils import Utils
 
 
@@ -41,15 +43,17 @@ class Task:
 
 
 class Report:
-    def __init__(self, report: dict):
+    def __init__(self, report: dict, time_stamp: dict):
         self.tasks = []
         self.projects = set()
+        self.time_stamp = time_stamp
         self.story_points = 0
         for entry in report["timeEntries"]:
             task = Task(entry)
             self.tasks.append(task)
             self.projects.add(entry["project"]["name"])
             self.story_points += task.story_points
+
 
     def groupByTaskName(self) -> dict:
         grouped = {}
@@ -84,7 +88,7 @@ class Report:
 
     def exportToJson(self, groupBy=None):
         if(groupBy == "project"):
-            Utils.writeJsonFile(self.groupByProject(),  "export/SprintReport-06072020")
+            Utils.writeJsonFile(self.groupByProject(),  "export/SprintReport-" + self.time_stamp["weeks"] + "-2020")
         elif(groupBy == "taskname"):
-            Utils.writeJsonFile(self.groupByTaskName(), "export/SprintReport-06072020")
+            Utils.writeJsonFile(self.groupByTaskName(), "export/SprintReport-"  + self.time_stamp["weeks"] + "-2020")
 

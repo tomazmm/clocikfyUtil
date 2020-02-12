@@ -1,21 +1,11 @@
 import requests
-import pprint
 import json
 import datetime
 import os
-
 from datetime import date
 from Utils import Utils
-
-
 from Report import Report
-
-pp = pprint.PrettyPrinter(indent=4)
-
-api = {
-    "endpoint": "https://api.clockify.me/api/workspaces/5c6d212ab079873a550108c0/reports/summary",
-    "key": "XjvZ28qiwG3DXF+/",
-}
+import sys
 
 def calcPrevSprintTimeStamp() -> dict:
     output_format = "%Y-%m-%dT%H:%M:%S.000Z"
@@ -29,27 +19,36 @@ def calcPrevSprintTimeStamp() -> dict:
     end_date = datetime.datetime.strptime(str(today.year) + "-W" + str(week + 1) + "-7 23:59:59", "%G-W%V-%u %H:%M:%S")
 
     return {
+        "weeks": str(week) + "-" + str(week + 1),
         "startDate": start_date.strftime(output_format),
         "endDate": end_date.strftime(output_format)
     }
 
-def getReportSummary() -> dict:
-    sprint_timestamp = calcPrevSprintTimeStamp()
-    summary_rq = Utils.readJsonFile("json/summary_request.json")
-    summary_rq["startDate"] = sprint_timestamp["startDate"]
-    summary_rq["endDate"] = sprint_timestamp["endDate"]
 
-    response = requests.post(api["endpoint"],
-                             headers={"X-Api-Key": api["key"], 'Content-type': 'application/json'},
+def getReportSummary(timestamp: dict) -> dict:
+    api_endpoint = "https://api.clockify.me/api/workspaces/5c6d212ab079873a550108c0/reports/summary"
+    user_key = Utils.readJsonFile("json/user_key.json")
+
+    summary_rq = Utils.readJsonFile("json/summary_request.json")
+    summary_rq["startDate"] = timestamp["startDate"]
+    summary_rq["endDate"] = timestamp["endDate"]
+
+    response = requests.post(api_endpoint,
+                             headers={"X-Api-Key": user_key["key"], 'Content-type': 'application/json'},
                              json=summary_rq)
     return json.loads(response.text)
 
 
 def main():
-    if not os.path.isdir("export"):
-        os.mkdir("export")
+    if(len(sys.argv) != 2):
+        print("You need to pass excatly one paramater.\nUsage: python3 export.py 'project'/'taskname'")
+        return
+    else:
+        if not os.path.isdir("export"):
+            os.mkdir("export")
 
-    Report(getReportSummary()).exportToJson("taskname")
+        sprint_timemstamp = calcPrevSprintTimeStamp()
+        Report(getReportSummary(sprint_timemstamp), sprint_timemstamp).exportToJson(sys.argv[1])
 
 
 if __name__ == "__main__":
