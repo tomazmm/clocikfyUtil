@@ -4,7 +4,7 @@ ClockifyUtil
 * python3
 
 
-###Usage
+### Usage
 1. download/clone repo to your local machine
 2. generate your API key in [clockify profile-settings](https://clockify.me/user/settings)
 3. copy key and paste it into project_root/json/user_key.json
