@@ -10,6 +10,6 @@ ClockifyUtil
 3. copy key and paste it into project_root/json/user_key.json
 4. execute:
     ```
-    cd path/to/root && python3 execute.py 'taskname'/'project'
+    cd path/to/root && python3 export.py 'taskname'/'project'
     ```
 5. Script will download reports and save the sprint-summary in export folder
